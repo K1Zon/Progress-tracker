@@ -33,6 +33,9 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # Мои приложения
     'learning_logs',
+    'users',
+
+    'bootstrap4',
 
     # Приложения по умолчанию
     'django.contrib.admin',
@@ -79,8 +82,12 @@ WSGI_APPLICATION = 'learning_log.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'engine',
+        'NAME': 'name',
+        'USER': 'user',
+        'PASSWORD': 'pass',
+        'HOST': 'host',
+        'PORT': 'port',
     }
 }
 
@@ -125,3 +132,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = '/users/login/'
