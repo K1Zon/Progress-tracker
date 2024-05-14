@@ -5,24 +5,79 @@
 {% endblock page_header %}
 
 {% block content %}
-
   <p>Записи:</p>
   <p>
     <a href="{% url 'learning_logs:new_entry' topic.id %}">Добавить новую запись</a>
   </p>
 
-    {% for entry in entries %}
-      <div class="card mb-3">
-        <h4 class="card-header">
-          {{ entry.date_added|date:'M d, Y H:i' }}
-          <small><a href="{% url 'learning_logs:edit_entry' entry.id %}">Редактировать запись</a></small>
-        </h4>
-        <div class="card-body">
-          {{ entry.text|linebreaks }}
-        </div>
+<style>
+  .progress-bar{
+      width: {{ completion_percentage | floatformat:"1" }}%;
+
+  }
+ </style>
+<div style="text-align: center; position: relative; width: 100%; height: 40px;  " class="progress">
+  <div class="progress-bar" role="progressbar" style="{{ completion_percentage|floatformat:"1" }}%;" aria-valuenow="{{ completion_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+   <span id="progresnumber" style="position: absolute; top: 20px; left: 0; width: 100%; height: 40px; display: block;"> {{ completion_percentage|floatformat:"1" }}%</span>
+</div>
+
+
+
+
+  {% for entry in entries %}
+    <div class="card mb-3">
+      <h4 class="card-header">
+        {{ entry.date_added|date:'M d, Y H:i' }}
+        <small><a href="{% url 'learning_logs:edit_entry' entry.id %}">Редактировать запись</a></small>
+      </h4>
+      <div class="card-body">
+        {{ entry.text|linebreaks }}
       </div>
-    {% empty %}
-      <p>В этой теме ещё нет записей. Добавьте новую!</p>
-    {% endfor %}
+      <div>
+        <label>
+          <input type="checkbox" class="entry-checkbox" data-entry-id="{{ entry.id }}" {% if entry.completed %}checked{% endif %}>
+          <span> Completed</span>
+        </label>
+      </div>
+    </div>
+  {% empty %}
+    <p>В этой теме ещё нет записей. Добавьте новую!</p>
+  {% endfor %}
+
+<script>
+  document.querySelectorAll('.entry-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+      var entryId = this.getAttribute('data-entry-id');
+      var completed = this.checked;
+      fetch('/toggle_entry_completion/' + entryId + '/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ completed:completed })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        updateProgressBar(data.completion_percentage);
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
+    });
+  });
+
+  function updateProgressBar(percentage) {
+    var progressBar = document.querySelector('.progress-bar');
+
+    progressBar.style.width = percentage + '%';
+    document.getElementById("progresnumber").textContent = (percentage-0).toFixed(1) + '%';
+  }
+</script>
 
 {% endblock content %}

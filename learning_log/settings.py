@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,15 +83,14 @@ WSGI_APPLICATION = 'learning_log.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'engine',
-        'NAME': 'name',
-        'USER': 'user',
-        'PASSWORD': 'pass',
-        'HOST': 'host',
-        'PORT': 'port',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'learning_log',
+        'USER': 'postgres',
+        'PASSWORD': '7355608k',
+        'HOST': 'localhost',
+        'PORT': 5432,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
