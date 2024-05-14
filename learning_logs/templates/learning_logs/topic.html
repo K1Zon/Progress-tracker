@@ -33,7 +33,7 @@
       <div class="card-body">
         {{ entry.text|linebreaks }}
       </div>
-      <div>
+        <div class="card-footer">
         <label>
           <input type="checkbox" class="entry-checkbox" data-entry-id="{{ entry.id }}" {% if entry.completed %}checked{% endif %}>
           <span> Completed</span>
